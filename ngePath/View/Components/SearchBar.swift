@@ -9,22 +9,22 @@ import SwiftUI
 
 struct SearchBar: View {
     var placeholder: String
-    @State private var searchResult = ""
+    @Binding var searchResult: String
     
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(.gray)
             
-                TextField(placeholder, text: $searchResult)
-                    .font(.footnote)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.gray)
-                    .padding(.vertical, 2)
+            TextField(placeholder, text: $searchResult)
+                .font(.footnote)
+                .fontWeight(.semibold)
+                .foregroundStyle(.gray)
+                .padding(.vertical, 2)
             
             Spacer()
-  
-//            check if searchResult has value to showing the icon
+            
+            //            check if searchResult has value to showing the icon
             if !searchResult.isEmpty {
                 Image(systemName: "xmark.circle")
                     .imageScale(.large)
@@ -49,5 +49,5 @@ struct SearchBar: View {
 }
 
 #Preview {
-    SearchBar(placeholder: "Search your product")
+    SearchBar(placeholder: "Search your product", searchResult: .constant("")) // Pass a constant empty string
 }

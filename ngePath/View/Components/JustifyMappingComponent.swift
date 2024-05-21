@@ -9,19 +9,23 @@ import SwiftUI
 
 struct JustifyMappingComponent<T: Mappable>: View {
     var objects: [T]
+    @Binding var setCategory: String
     
     var body: some View {
-        HStack (alignment: .center, spacing: 20) {
-            ForEach (objects , id: \.name) { object in
-                Spacer()
-                Category(logo: object.logo, name: object.name)
+        HStack(alignment: .top, spacing: 0) {
+            ForEach(objects.indices, id: \.self) { index in
+                Category(logo: objects[index].logo, name: objects[index].name, setCategory: $setCategory)
+                
+                if index != objects.indices.last {
+                    Spacer()
+                }
             }
-            Spacer()
         }
         .padding()
     }
 }
 
+
 #Preview {
-    JustifyMappingComponent(objects: sampleCategories)
+    JustifyMappingComponent(objects: sampleCategories, setCategory: .constant("Restaurant"))
 }

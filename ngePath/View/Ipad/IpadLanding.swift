@@ -26,3 +26,4 @@ struct IpadLanding: View {
 #Preview {
     IpadLanding()
 }
+
