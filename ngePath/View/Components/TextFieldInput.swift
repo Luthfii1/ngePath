@@ -7,20 +7,25 @@
 
 import SwiftUI
 
-struct SearchBar: View {
+struct TextFieldInput: View {
     var placeholder: String
+    var isSearching: Bool
     @Binding var searchResult: String
     
     var body: some View {
         HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.gray)
             
-            TextField(placeholder, text: $searchResult)
+            if isSearching {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.gray)
+            }
+            
+            TextField(placeholder, text: $searchResult, axis: .vertical)
                 .font(.footnote)
                 .fontWeight(.semibold)
                 .foregroundStyle(.gray)
                 .padding(.vertical, 2)
+//                .lineLimit(5...10)
             
             Spacer()
             
@@ -39,7 +44,7 @@ struct SearchBar: View {
         .padding(10)
         .background(Color("Neutral"))
         .overlay {
-            Capsule()
+            RoundedRectangle(cornerRadius: 10.0)
                 .stroke(lineWidth: 2)
                 .foregroundStyle(Color(.systemGray))
         }
@@ -49,5 +54,5 @@ struct SearchBar: View {
 }
 
 #Preview {
-    SearchBar(placeholder: "Search your product", searchResult: .constant("")) // Pass a constant empty string
+    TextFieldInput(placeholder: "Search your product", isSearching: false, searchResult: .constant("")) // Pass a constant empty string
 }

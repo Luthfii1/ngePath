@@ -26,7 +26,7 @@ struct DraggableSheetView: View {
             VStack {
                 VStack {
                     SheetDragLine()
-                    SearchBar(placeholder: "Search Place Here", searchResult: $textSearch)
+                    TextFieldInput(placeholder: "Search Place Here", isSearching: true, searchResult: $textSearch)
                         .padding(.vertical, 10)
                         .onSubmit (of: .text) {
                             Task {
@@ -49,7 +49,7 @@ struct DraggableSheetView: View {
                             VStack (alignment: .leading) {
                                 Title(text: "Categories")
                                     .font(.title)
-                                JustifyMappingComponent(objects: categories, setCategory: $setCategory)
+                                JustifyMappingComponent(objects: categories, setCategory: $setCategory, isJustifyBetween: true)
                             }
                             
                             // Favorite Places
@@ -73,8 +73,6 @@ struct DraggableSheetView: View {
                     DragGesture()
                         .onChanged { value in
                             let newOffset = value.translation.height + self.offset
-                            print("newOffset : ", newOffset)
-                            print("minHeight : ", minHeight)
                             if newOffset >= minHeight && newOffset <= maxHeight {
                                 self.offset = newOffset
                             }

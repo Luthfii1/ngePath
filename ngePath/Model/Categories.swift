@@ -34,16 +34,12 @@ class FavPlaces {
     }
 }
 
-let sampleCategories = [
-    Categories(logo: "cup.and.saucer.fill", name: "Coffeeshop"),
-    Categories(logo: "fork.knife", name: "Restaurant"),
-    Categories(logo: "bird.fill", name: "Public Space"),
-    Categories(logo: "books.vertical.fill", name: "Library")
-]
-
-let sampleFavPlaces: [FavPlaces] = [
-    FavPlaces(placeName: "Central Perk", placeDetail: "Iconic coffee shop", category: sampleCategories[0]),
-    FavPlaces(placeName: "La Trattoria", placeDetail: "Cozy Italian restaurant", category: sampleCategories[1]),
-    FavPlaces(placeName: "Central Park", placeDetail: "Popular public space", category: sampleCategories[2]),
-    FavPlaces(placeName: "City Library", placeDetail: "Large community library", category: sampleCategories[3])
-]
+class Gallery: Mappable {
+    var logo: String
+    var name: String
+    
+    init(logo: String, name: String) {
+        self.logo = logo
+        self.name = name
+    }
+}

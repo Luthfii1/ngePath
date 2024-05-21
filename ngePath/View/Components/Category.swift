@@ -11,24 +11,25 @@ struct Category: View {
     var logo: String
     var name: String
     @Binding var setCategory: String
+    @State private var isPressed: Bool = false
     
     var body: some View {
         Button {
-            print(name)
             setCategory = name
+            isPressed.toggle()
         } label: {
             VStack (alignment: .center, spacing: 5) {
                 Image(systemName: logo)
                     .resizable()
                     .frame(width: 30, height: 30)
-                    .foregroundStyle(isCategoryPressed(setCategory: setCategory, name: name) ? .white : Color("PrimaryBlue"))
+                    .foregroundStyle(isPressed ? .white : Color("PrimaryBlue"))
                     .padding()
-                    .background(isCategoryPressed(setCategory: setCategory, name: name) ? Color("BGButtonPressed") : Color("SecondaryBlue"))
+                    .background(isPressed ? Color("BGButtonPressed") : Color("SecondaryBlue"))
                     .clipShape(Circle())
                 
                 Text(name)
                     .font(.subheadline)
-                    .foregroundStyle(isCategoryPressed(setCategory: setCategory, name: name) ? Color("PrimaryBlue") : .black)
+                    .foregroundStyle(isPressed ? Color("PrimaryBlue") : .black)
             }
         }
     }
