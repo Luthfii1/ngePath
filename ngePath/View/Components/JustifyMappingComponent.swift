@@ -9,7 +9,7 @@ import SwiftUI
 
 struct JustifyMappingComponent<T: Mappable>: View {
     var objects: [T]
-    @Binding var setCategory: String
+    @Binding var setCategory: [String]
     var isJustifyBetween: Bool
     
     var body: some View {
@@ -28,5 +28,5 @@ struct JustifyMappingComponent<T: Mappable>: View {
 
 
 #Preview {
-    JustifyMappingComponent(objects: sampleCategories, setCategory: .constant("Restaurant"), isJustifyBetween: false)
+    JustifyMappingComponent(objects: sampleCategories, setCategory: .constant(["Banten"]), isJustifyBetween: false)
 }

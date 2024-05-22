@@ -10,26 +10,41 @@ import SwiftUI
 struct Category: View {
     var logo: String
     var name: String
-    @Binding var setCategory: String
+    @Binding var setCategory: [String]
     @State private var isPressed: Bool = false
     
     var body: some View {
         Button {
-            setCategory = name
-            isPressed.toggle()
+//            check the setCategory has already save the name or not
+            if setCategory.contains(name) {
+                setCategory.removeAll { $0 == name }
+                isPressed = false
+            } else {
+                setCategory.append(name)
+                isPressed = true
+            }
+            
+//            if setCategory.contains(name){
+//                isPressed = true
+//            } else {
+//                isPressed = false
+//            }
         } label: {
             VStack (alignment: .center, spacing: 5) {
                 Image(systemName: logo)
                     .resizable()
                     .frame(width: 30, height: 30)
-                    .foregroundStyle(isPressed ? .white : Color("PrimaryBlue"))
+                    .foregroundStyle(isPressed ? 
+                        .white : Color("PrimaryBlue"))
                     .padding()
-                    .background(isPressed ? Color("BGButtonPressed") : Color("SecondaryBlue"))
+                    .background(isPressed ? 
+                                Color("BGButtonPressed") : Color("SecondaryBlue"))
                     .clipShape(Circle())
                 
                 Text(name)
                     .font(.subheadline)
-                    .foregroundStyle(isPressed ? Color("PrimaryBlue") : .black)
+                    .foregroundStyle(isPressed ? 
+                                     Color("PrimaryBlue") : .black)
             }
         }
     }
@@ -40,5 +55,5 @@ func isCategoryPressed(setCategory: String, name: String) -> Bool {
 }
 
 #Preview {
-    Category(logo: "bird.fill", name: "n", setCategory: .constant("Burung"))
+    Category(logo: "bird.fill", name: "n", setCategory: .constant(["Burung"]))
 }

@@ -26,3 +26,20 @@ extension MKCoordinateRegion {
         )
     }
 }
+
+
+enum CategoryType: String {
+    case coffeeshop, restaurant, publicSpace, library
+}
+
+class SavePlaces {
+    var name: String
+    var coordinate: CLLocationCoordinate2D
+    var category: CategoryType
+    
+    init(name: String, coordinate: CLLocationCoordinate2D, category: CategoryType) {
+        self.name = name
+        self.coordinate = coordinate
+        self.category = category
+    }
+}

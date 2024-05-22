@@ -13,14 +13,14 @@ struct MapView: View {
     @State private var result = [MKMapItem]()
     @State private var mapSelection : MKMapItem?
     @State private var categories: [Categories] = sampleCategories
-    @State private var setCategory: String = ""
+    @State private var setCategory: [String] = []
     @State private var textSearch: String = ""
     @State private var isSetPlace: Bool = false
     @State private var isFavPlace: Bool = false
     @State private var placeName: String = ""
     @State private var storyTitle: String = ""
     @State private var storyDescription: String = ""
-    
+    @State private var sampleResult : [SavePlaces] = sampleSavePlaces
     
     var body: some View {
         GeometryReader { geometry in
@@ -32,8 +32,8 @@ struct MapView: View {
                 // End of User Location
                 
                 // Search Results
-                ForEach(result, id: \.self) { item in
-                    Marker(item.placemark.name ?? "", coordinate: item.placemark.coordinate)
+                ForEach(categoryFilterMapping(locations: sampleResult, category: setCategory), id: \.name) { item in
+                    Marker(item.name, coordinate: item.coordinate)
                 }
                 // End of Search Results
             }
@@ -210,7 +210,7 @@ struct CurrentPlace: View {
 
 struct SetCategories: View {
     @State private var categories: [Categories] = sampleCategories
-    @Binding var setCategory: String
+    @Binding var setCategory: [String]
     
     var body: some View {
         VStack (alignment: .leading) {

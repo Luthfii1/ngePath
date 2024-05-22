@@ -19,7 +19,7 @@ struct DraggableSheetView: View {
     @Binding var result : [MKMapItem]
     @State private var textSearch: String = ""
     @State private var categories: [Categories] = sampleCategories
-    @Binding var setCategory: String
+    @Binding var setCategory: [String]
     
     var body: some View {
         GeometryReader { geometry in
@@ -97,7 +97,7 @@ struct DraggableSheetView: View {
 }
 
 #Preview {
-    DraggableSheetView(result: .constant([]), setCategory: .constant(""))
+    DraggableSheetView(result: .constant([]), setCategory: .constant(["Burung"]))
 }
 
 struct SheetDragLine: View {
