@@ -35,11 +35,40 @@ enum CategoryType: String {
 class SavePlaces {
     var name: String
     var coordinate: CLLocationCoordinate2D
-    var category: CategoryType
+    var category: Categories
+    var isFavorite: Bool
+    var address: String
     
-    init(name: String, coordinate: CLLocationCoordinate2D, category: CategoryType) {
+    init(name: String, coordinate: CLLocationCoordinate2D, category: Categories, isFavorite: Bool = false, address: String) {
         self.name = name
         self.coordinate = coordinate
         self.category = category
+        self.isFavorite = isFavorite
+        self.address = SavePlaces.minimizedAddress(address)
+    }
+    
+    static func minimizedAddress(_ address: String) -> String {
+        let components = address.components(separatedBy: ",")
+        var minimizedAddress = ""
+        let keywords = ["Jl.", "Jalan", "gg", "Gg", "gang", "Kec.", "Kota", "Kabupaten", "Provinsi"]
+        
+        // Check each of component if the component have the regex like above
+        for component in components {
+            let trimmedComponent = component.trimmingCharacters(in: .whitespacesAndNewlines)
+            for keyword in keywords {
+                if trimmedComponent.contains(keyword) {
+                    minimizedAddress += ", \(trimmedComponent)"
+                    break
+                }
+            }
+        }
+        
+        // Remove leading comma and space if present
+        if minimizedAddress.hasPrefix(", ") {
+            minimizedAddress.removeFirst(2)
+        }
+        
+        return minimizedAddress
     }
 }
+

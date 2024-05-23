@@ -23,12 +23,6 @@ struct Category: View {
                 setCategory.append(name)
                 isPressed = true
             }
-            
-//            if setCategory.contains(name){
-//                isPressed = true
-//            } else {
-//                isPressed = false
-//            }
         } label: {
             VStack (alignment: .center, spacing: 5) {
                 Image(systemName: logo)
@@ -41,7 +35,7 @@ struct Category: View {
                                 Color("BGButtonPressed") : Color("SecondaryBlue"))
                     .clipShape(Circle())
                 
-                Text(name)
+                Text(name.uppercasedFirstLetter.spacedUppercased)
                     .font(.subheadline)
                     .foregroundStyle(isPressed ? 
                                      Color("PrimaryBlue") : .black)

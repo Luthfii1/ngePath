@@ -15,8 +15,8 @@ func categoryFilterMapping(locations: [SavePlaces], category: [String]) -> [Save
     }
     
     for location in locations {
-                print("category: ", location.category.rawValue, " real: \(category)")
-        if category.contains(where: { $0.lowercased() == location.category.rawValue.lowercased() }) {
+        print("category: ", location.category.name.rawValue, " real: \(category)")
+        if category.contains(where: { $0.lowercased() == location.category.name.rawValue.lowercased() }) {
             result.append(location)
         }
     }

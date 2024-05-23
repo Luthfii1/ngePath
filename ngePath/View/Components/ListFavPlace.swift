@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ListFavPlace: View {
-    @State private var favPlaces: [FavPlaces] = sampleFavPlaces
+    @State private var favPlaces: [SavePlaces] = sampleSavePlaces.filter{ $0.isFavorite }
     
     var body: some View {
         VStack (alignment: .leading, spacing: 20) {
-            ForEach (favPlaces, id: \.placeName) { place in
-                FavPlace(logo: place.category.logo, loctName: place.placeName, loctPreview: place.placeDetail)
+            ForEach (favPlaces, id: \.name) { place in
+                FavPlace(logo: place.category.logo, loctName: place.name, loctPreview: place.address)
                 
                 Divider()
             }

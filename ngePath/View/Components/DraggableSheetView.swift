@@ -16,7 +16,8 @@ struct DraggableSheetView: View {
     @State private var keyboardHeight: CGFloat = 0
     
     // Data Important
-    @Binding var result : [MKMapItem]
+    @Binding var result : [SavePlaces]
+    var sampleResult : [SavePlaces]
     @State private var textSearch: String = ""
     @State private var categories: [Categories] = sampleCategories
     @Binding var setCategory: [String]
@@ -28,16 +29,13 @@ struct DraggableSheetView: View {
                     SheetDragLine()
                     TextFieldInput(placeholder: "Search Place Here", isSearching: true, searchResult: $textSearch)
                         .padding(.vertical, 10)
-                        .onSubmit (of: .text) {
-                            Task {
-                                result = await searchPlace(text: textSearch)
-                                // Reset sheet height
-                                self.offset = self.maxHeight
-                                self.isExpanded = false
-                                
-                                print(result)
+                        .onChange(of: textSearch, { oldValue, newValue in
+                            if !newValue.isEmpty {
+                                result = sampleResult.filter { $0.name.lowercased().contains(newValue.lowercased()) }
+                            } else {
+                                result = []
                             }
-                        }
+                        })
                         .onTapGesture {
                             self.offset = self.minHeight
                             self.isExpanded = true
@@ -91,13 +89,13 @@ struct DraggableSheetView: View {
             }
             .padding()
         }
-//        .background(Color.black.opacity(0.3))
+        //        .background(Color.black.opacity(0.3))
         .edgesIgnoringSafeArea(.all)
     }
 }
 
 #Preview {
-    DraggableSheetView(result: .constant([]), setCategory: .constant(["Burung"]))
+    DraggableSheetView(result: .constant([]), sampleResult: sampleSavePlaces, setCategory: .constant(["Burung"]))
 }
 
 struct SheetDragLine: View {
