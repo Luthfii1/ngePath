@@ -10,17 +10,11 @@ import MapKit
 
 struct MapView: View {
     @State private var cameraPosition: MapCameraPosition = .region(.userRegion)
-    @State private var result = [MKMapItem]()
     @State private var mapSelection : MKMapItem?
+    @State private var sampleResult : [SavePlaces] = sampleSavePlaces
     @State private var categories: [Categories] = sampleCategories
-    @State private var setCategory: String = ""
-    @State private var textSearch: String = ""
-    @State private var isSetPlace: Bool = false
-    @State private var isFavPlace: Bool = false
-    @State private var placeName: String = ""
-    @State private var storyTitle: String = ""
-    @State private var storyDescription: String = ""
-    
+    @ObservedObject private var state = VarState()
+    @ObservedObject private var inputUser = CreateNewPlace()
     
     var body: some View {
         GeometryReader { geometry in
@@ -32,8 +26,8 @@ struct MapView: View {
                 // End of User Location
                 
                 // Search Results
-                ForEach(result, id: \.self) { item in
-                    Marker(item.placemark.name ?? "", coordinate: item.placemark.coordinate)
+                ForEach(categoryFilterMapping(locations: state.searchResult.isEmpty ? sampleResult : state.searchResult, category: state.setCategory), id: \.name) { item in
+                    Marker(item.name, coordinate: item.coordinate)
                 }
                 // End of Search Results
             }
@@ -45,7 +39,7 @@ struct MapView: View {
             .overlay(alignment: .bottomTrailing){
                 VStack (spacing: 10) {
                     Button(action: {
-                        isSetPlace.toggle()
+                        state.isSetPlace.toggle()
                     }, label: {
                         HStack (alignment: .center) {
                             Image(systemName: "scope")
@@ -65,19 +59,19 @@ struct MapView: View {
                 .padding(.horizontal, geometry.size.width * 0.03)
             }
             .overlay(alignment: .bottomLeading) {
-                DraggableSheetView(result: $result, setCategory: $setCategory)
+                DraggableSheetView(result: $state.searchResult, sampleResult: sampleResult, setCategory: $state.setCategory)
             }
-            .sheet(isPresented: $isSetPlace, content: {
+            .sheet(isPresented: $state.isSetPlace, content: {
                 VStack(alignment: .leading) {
-                    HeaderSheet(isSetPlace: $isSetPlace, isFavPlace: $isFavPlace)
+                    HeaderSheet(state: state)
                         .padding(.bottom, 20)
                     
                     ScrollView (.vertical, showsIndicators: false) {
                         VStack {
-                            CurrentPlace(placeName: $placeName)
+                            CurrentPlace(placeName: $inputUser.placeName)
                                 .padding(6)
                             
-                            SetCategories(setCategory: $setCategory)
+                            SetCategories(setCategory: $state.setCategory)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(6)
                             
@@ -90,10 +84,10 @@ struct MapView: View {
                                     .font(.title)
                                     .padding(.vertical, 8)
                                 
-                                TextFieldInput(placeholder: "Story Title", isSearching: false, searchResult: $storyTitle)
+                                TextFieldInput(placeholder: "Story Title", isSearching: false, searchResult: $inputUser.storyTitle)
                                     .frame(width: 200)
                                 
-                                TextFieldInput(placeholder: "Description Title", isSearching: false, searchResult: $storyDescription)
+                                TextFieldInput(placeholder: "Description Title", isSearching: false, searchResult: $inputUser.storyDescription)
                                     .lineLimit(5...10)
                                 
                                 SetImages()
@@ -150,14 +144,13 @@ struct UserAnotation: View {
 }
 
 struct HeaderSheet: View {
-    @Binding var isSetPlace: Bool
-    @Binding var isFavPlace: Bool
+    @ObservedObject var state: VarState
     
     var body: some View {
         VStack {
             HStack(alignment: .center) {
                 Button(action: {
-                    isSetPlace.toggle()
+                    state.isSetPlace.toggle()
                 }, label: {
                     Text("Cancel")
                         .font(.title3)
@@ -172,11 +165,11 @@ struct HeaderSheet: View {
                 
                 Spacer()
                 
-                Image(systemName: isFavPlace ? "heart.fill" : "heart")
+                Image(systemName: state.isFavPlace ? "heart.fill" : "heart")
                     .foregroundStyle(.primaryBlue)
                     .font(.title2)
                     .onTapGesture {
-                        isFavPlace.toggle()
+                        state.isFavPlace.toggle()
                     }
             }
             
@@ -210,7 +203,7 @@ struct CurrentPlace: View {
 
 struct SetCategories: View {
     @State private var categories: [Categories] = sampleCategories
-    @Binding var setCategory: String
+    @Binding var setCategory: [String]
     
     var body: some View {
         VStack (alignment: .leading) {
