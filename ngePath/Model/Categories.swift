@@ -12,25 +12,26 @@ protocol Mappable {
     var name: String { get }
 }
 
-class Categories: Mappable {
+class Categories {
     var logo: String
-    var name: String
+    var name: CategoryType
     
-    init(logo: String, name: String) {
-        self.logo = logo
+    init(name: CategoryType) {
+        self.logo = Categories.logoForCategory(name)
         self.name = name
     }
-}
-
-class FavPlaces {
-    var placeName: String
-    var placeDetail: String
-    var category: Categories
     
-    init(placeName: String, placeDetail: String, category: Categories) {
-        self.placeName = placeName
-        self.placeDetail = placeDetail
-        self.category = category
+    static func logoForCategory(_ name: CategoryType) -> String {
+        switch name {
+        case .coffeeshop:
+            return "cup.and.saucer.fill"
+        case .restaurant:
+            return "fork.knife"
+        case .publicSpace:
+            return "bird.fill"
+        case .library:
+            return "books.vertical.fill"
+        }
     }
 }
 
