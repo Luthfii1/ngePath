@@ -9,49 +9,46 @@ import SwiftUI
 import MapKit
 
 struct DraggableSheetView: View {
-    @State private var isExpanded: Bool = false
+    @EnvironmentObject private var vm: LocationViewModel
+    @State private var textSearch: String = ""
+    
     @State private var offset: CGFloat = UIScreen.main.bounds.height * 0.85
     private let minHeight: CGFloat = UIScreen.main.bounds.height * 0.2
     private let maxHeight: CGFloat = UIScreen.main.bounds.height * 0.85
     @State private var keyboardHeight: CGFloat = 0
-    
-    // Data Important
-    @Binding var result : [SavePlaces]
-    var sampleResult : [SavePlaces]
-    @State private var textSearch: String = ""
-    @State private var categories: [Categories] = sampleCategories
-    @Binding var setCategory: [String]
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 VStack {
                     SheetDragLine()
-                    TextFieldInput(placeholder: "Search Place Here", isSearching: true, searchResult: $textSearch)
+                    TextFieldInput(placeholder: "Search Place Here", isSearching: true)
                         .padding(.vertical, 10)
-                        .onChange(of: textSearch, { oldValue, newValue in
+                        .onChange(of: vm.inputUser.textSearch) { oldValue, newValue in
+                            print("new val: ", newValue)
                             if !newValue.isEmpty {
-                                result = sampleResult.filter { $0.name.lowercased().contains(newValue.lowercased()) }
+                                vm.state.searchResult = vm.sampleResult.filter { $0.name.lowercased().contains(newValue.lowercased()) }
                             } else {
-                                result = []
+                                vm.state.searchResult = []
                             }
-                        })
+                            vm.filterPlaces()
+                        }
                         .onTapGesture {
                             self.offset = self.minHeight
-                            self.isExpanded = true
+                            vm.setExpanded(state: true)
                         }
                     
-                    if isExpanded {
+                    if vm.boolState.isExpandedBottomSheet {
                         VStack {
                             // Categories of places
-                            VStack (alignment: .leading) {
+                            VStack(alignment: .leading) {
                                 Title(text: "Categories")
                                     .font(.title)
-                                JustifyMappingComponent(objects: categories, setCategory: $setCategory, isJustifyBetween: true)
+                                JustifyMappingComponent(isJustifyBetween: true)
                             }
                             
                             // Favorite Places
-                            VStack (alignment: .leading) {
+                            VStack(alignment: .leading) {
                                 Title(text: "My Fav Place")
                                     .font(.title)
                                 
@@ -78,10 +75,10 @@ struct DraggableSheetView: View {
                         .onEnded { value in
                             if self.offset < (self.maxHeight - self.minHeight) / 2 {
                                 self.offset = self.minHeight
-                                self.isExpanded = true
+                                vm.setExpanded(state: true)
                             } else {
                                 self.offset = self.maxHeight
-                                self.isExpanded = false
+                                vm.setExpanded(state: false)
                             }
                         }
                 )
@@ -89,13 +86,13 @@ struct DraggableSheetView: View {
             }
             .padding()
         }
-        //        .background(Color.black.opacity(0.3))
         .edgesIgnoringSafeArea(.all)
     }
 }
 
 #Preview {
-    DraggableSheetView(result: .constant([]), sampleResult: sampleSavePlaces, setCategory: .constant(["Burung"]))
+    DraggableSheetView()
+        .environmentObject(LocationViewModel())
 }
 
 struct SheetDragLine: View {
@@ -111,4 +108,3 @@ struct SheetDragLine: View {
         .foregroundStyle(.black)
     }
 }
-

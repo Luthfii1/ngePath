@@ -7,11 +7,11 @@
 
 import Foundation
 
-class CreateNewPlace: ObservableObject {
-    @Published var textSearch: String
-    @Published var placeName: String
-    @Published var storyTitle: String
-    @Published var storyDescription: String
+class CreateNewPlace {
+    var textSearch: String
+    var placeName: String
+    var storyTitle: String
+    var storyDescription: String
     
     init(textSearch: String = "", placeName: String = "", storyTitle: String = "", storyDescription: String = "") {
         self.textSearch = textSearch

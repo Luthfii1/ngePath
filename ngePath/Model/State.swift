@@ -7,16 +7,18 @@
 
 import Foundation
 
-class VarState : ObservableObject {
-    @Published var isFavPlace: Bool
-    @Published var isSetPlace: Bool
+class VarState: ObservableObject {
     @Published var setCategory: [String]
     @Published var searchResult: [SavePlaces]
     
-    init(isFavPlace: Bool = false, isSetPlace: Bool = false, setCategory: [String] = [], searchResult: [SavePlaces] = []) {
-        self.isFavPlace = isFavPlace
-        self.isSetPlace = isSetPlace
+    init(setCategory: [String] = [], searchResult: [SavePlaces] = []) {
         self.setCategory = setCategory
         self.searchResult = searchResult
     }
+}
+
+struct BoolState {
+    var isFavPlace: Bool = false
+    var isMarkPlace: Bool = false
+    var isExpandedBottomSheet: Bool = false
 }

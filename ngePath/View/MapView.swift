@@ -9,39 +9,35 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
-    @State private var cameraPosition: MapCameraPosition = .region(.userRegion)
-    @State private var mapSelection : MKMapItem?
-    @State private var sampleResult : [SavePlaces] = sampleSavePlaces
-    @State private var categories: [Categories] = sampleCategories
-    @ObservedObject private var state = VarState()
-    @ObservedObject private var inputUser = CreateNewPlace()
+    @EnvironmentObject private var vm: LocationViewModel
     
     var body: some View {
         GeometryReader { geometry in
-            Map(position: $cameraPosition, selection: $mapSelection) {
+            Map(position: $vm.mapCamera, selection: $vm.mapSelection) {
                 // User Location
                 Annotation("My Location", coordinate: .userLoct) {
                     UserAnotation()
                 }
                 // End of User Location
                 
-                // Search Results
-                ForEach(categoryFilterMapping(locations: state.searchResult.isEmpty ? sampleResult : state.searchResult, category: state.setCategory), id: \.name) { item in
+                // Filtered Locations
+                ForEach(vm.filteredPlaces, id: \.name) { item in
                     Marker(item.name, coordinate: item.coordinate)
                 }
-                // End of Search Results
+                // End of Filtered Locations
             }
             .mapControls {
                 MapPitchToggle()
                 MapCompass()
                 MapUserLocationButton()
             }
-            .overlay(alignment: .bottomTrailing){
-                VStack (spacing: 10) {
+            .overlay(alignment: .bottomTrailing) {
+                VStack(spacing: 10) {
                     Button(action: {
-                        state.isSetPlace.toggle()
+                        vm.toggleMarkPlace()
+                        print("setplace: ", vm.boolState.isMarkPlace)
                     }, label: {
-                        HStack (alignment: .center) {
+                        HStack(alignment: .center) {
                             Image(systemName: "scope")
                                 .foregroundStyle(.white)
                             
@@ -59,19 +55,19 @@ struct MapView: View {
                 .padding(.horizontal, geometry.size.width * 0.03)
             }
             .overlay(alignment: .bottomLeading) {
-                DraggableSheetView(result: $state.searchResult, sampleResult: sampleResult, setCategory: $state.setCategory)
+                DraggableSheetView()
             }
-            .sheet(isPresented: $state.isSetPlace, content: {
+            .sheet(isPresented: $vm.boolState.isMarkPlace) {
                 VStack(alignment: .leading) {
-                    HeaderSheet(state: state)
+                    HeaderSheet()
                         .padding(.bottom, 20)
                     
-                    ScrollView (.vertical, showsIndicators: false) {
+                    ScrollView(.vertical, showsIndicators: false) {
                         VStack {
-                            CurrentPlace(placeName: $inputUser.placeName)
+                            CurrentPlace()
                                 .padding(6)
                             
-                            SetCategories(setCategory: $state.setCategory)
+                            SetCategories()
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(6)
                             
@@ -84,10 +80,10 @@ struct MapView: View {
                                     .font(.title)
                                     .padding(.vertical, 8)
                                 
-                                TextFieldInput(placeholder: "Story Title", isSearching: false, searchResult: $inputUser.storyTitle)
+                                TextFieldInput(placeholder: "Story Title", isSearching: false)
                                     .frame(width: 200)
                                 
-                                TextFieldInput(placeholder: "Description Title", isSearching: false, searchResult: $inputUser.storyDescription)
+                                TextFieldInput(placeholder: "Description Title", isSearching: false)
                                     .lineLimit(5...10)
                                 
                                 SetImages()
@@ -96,7 +92,7 @@ struct MapView: View {
                         }
                     }
                     
-                    HStack (alignment: .center, content: {
+                    HStack(alignment: .center) {
                         Spacer()
                         
                         Button(action: {
@@ -112,17 +108,19 @@ struct MapView: View {
                         })
                         
                         Spacer()
-                    })
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding()
-            })
+            }
         }
     }
 }
 
+
 #Preview {
     MapView()
+        .environmentObject(LocationViewModel())
 }
 
 struct UserAnotation: View {
@@ -144,13 +142,13 @@ struct UserAnotation: View {
 }
 
 struct HeaderSheet: View {
-    @ObservedObject var state: VarState
+    @EnvironmentObject private var vm: LocationViewModel
     
     var body: some View {
         VStack {
             HStack(alignment: .center) {
                 Button(action: {
-                    state.isSetPlace.toggle()
+                    vm.toggleMarkPlace()
                 }, label: {
                     Text("Cancel")
                         .font(.title3)
@@ -165,22 +163,26 @@ struct HeaderSheet: View {
                 
                 Spacer()
                 
-                Image(systemName: state.isFavPlace ? "heart.fill" : "heart")
+                Image(systemName: vm.boolState.isFavPlace ? "heart.fill" : "heart")
                     .foregroundStyle(.primaryBlue)
                     .font(.title2)
                     .onTapGesture {
-                        state.isFavPlace.toggle()
+                        vm.toggleFavPlace()
                     }
             }
             
-            Rectangle()
-                .frame(width: .infinity, height: 1)
+            GeometryReader { geometry in
+                Rectangle()
+                    .frame(width: geometry.size.width, height: 1)
+                    .foregroundColor(.gray)
+            }
+            .frame(height: 1)
         }
     }
 }
 
 struct CurrentPlace: View {
-    @Binding var placeName: String
+    @EnvironmentObject private var vm: LocationViewModel
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -188,7 +190,7 @@ struct CurrentPlace: View {
                 .font(.title)
             
             HStack (alignment: .center, spacing: 10) {
-                TextFieldInput(placeholder: "Apple Developer Acadeny", isSearching: false, searchResult: $placeName)
+                TextFieldInput(placeholder: "Apple Developer Acadeny", isSearching: false)
                 
                 Button(action: {
                     print("Refresh")
@@ -202,14 +204,11 @@ struct CurrentPlace: View {
 }
 
 struct SetCategories: View {
-    @State private var categories: [Categories] = sampleCategories
-    @Binding var setCategory: [String]
-    
     var body: some View {
         VStack (alignment: .leading) {
             Title(text: "Categories")
                 .font(.title)
-            JustifyMappingComponent(objects: categories, setCategory: $setCategory, isJustifyBetween: false)
+            JustifyMappingComponent( isJustifyBetween: false)
         }
     }
 }

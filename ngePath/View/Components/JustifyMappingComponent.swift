@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct JustifyMappingComponent: View {
-    var objects: [Categories]
-    @Binding var setCategory: [String]
+    @EnvironmentObject private var vm: LocationViewModel
     var isJustifyBetween: Bool
     
     var body: some View {
         HStack(alignment: .top, spacing: isJustifyBetween ? 0 : 20) {
-            ForEach(objects.indices, id: \.self) { index in
-                Category(logo: objects[index].logo, name: objects[index].name.rawValue, setCategory: $setCategory)
+            ForEach(vm.categories.indices, id: \.self) { index in
+                Category(logo: vm.categories[index].logo, name: vm.categories[index].name.rawValue, setCategory: $vm.state.setCategory)
                 
-                if index != objects.indices.last && isJustifyBetween {
+                if index != vm.categories.indices.last && isJustifyBetween {
                     Spacer()
                 }
             }
@@ -28,5 +27,6 @@ struct JustifyMappingComponent: View {
 
 
 #Preview {
-    JustifyMappingComponent(objects: sampleCategories, setCategory: .constant(["Banten"]), isJustifyBetween: false)
+    JustifyMappingComponent(isJustifyBetween: false)
+        .environmentObject(LocationViewModel())
 }

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct ngePathApp: App {
+    @StateObject private var vm = LocationViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MapView()
+                .environmentObject(vm)
         }
     }
 }

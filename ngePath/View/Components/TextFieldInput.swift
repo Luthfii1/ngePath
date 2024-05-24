@@ -8,51 +8,52 @@
 import SwiftUI
 
 struct TextFieldInput: View {
+    @EnvironmentObject private var vm: LocationViewModel
     var placeholder: String
     var isSearching: Bool
-    @Binding var searchResult: String
     
     var body: some View {
         HStack {
-            
             if isSearching {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(.gray)
             }
             
-            TextField(placeholder, text: $searchResult, axis: .vertical)
+            TextField(placeholder, text: $vm.inputUser.textSearch, axis: .vertical)
                 .font(.footnote)
                 .fontWeight(.semibold)
                 .foregroundStyle(.gray)
                 .padding(.vertical, 2)
-//                .lineLimit(5...10)
+                .onChange(of: vm.inputUser.textSearch) { oldValue, newValue in
+                    vm.filterPlaces()
+                }
             
             Spacer()
             
-            //            check if searchResult has value to showing the icon
-            if !searchResult.isEmpty {
+            if !vm.inputUser.textSearch.isEmpty {
                 Image(systemName: "xmark.circle")
                     .imageScale(.large)
                     .font(.subheadline)
                     .foregroundStyle(.black)
                     .padding(.horizontal, 5)
                     .onTapGesture {
-                        searchResult = ""
+                        vm.cleanSearch()
+                        print("remove: ", vm.inputUser.textSearch)
                     }
             }
         }
         .padding(10)
-        .background(Color("Neutral"))
         .overlay {
             RoundedRectangle(cornerRadius: 10.0)
                 .stroke(lineWidth: 2)
                 .foregroundStyle(Color(.systemGray))
         }
-        .padding(.horizontal,2)
+        .padding(.horizontal, 2)
         .padding(.bottom, 10)
     }
 }
 
 #Preview {
-    TextFieldInput(placeholder: "Search your product", isSearching: false, searchResult: .constant("")) // Pass a constant empty string
+    TextFieldInput(placeholder: "Search your product", isSearching: false)
+        .environmentObject(LocationViewModel())
 }
