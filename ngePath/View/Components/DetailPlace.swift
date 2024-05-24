@@ -9,10 +9,18 @@ import SwiftUI
 
 struct DetailPlace: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading) {
+            HeaderSheet(isCreate: false)
+                .padding(6)
+            
+            
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding()
     }
 }
 
 #Preview {
     DetailPlace()
+        .environmentObject(LocationViewModel())
 }

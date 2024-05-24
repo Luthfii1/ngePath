@@ -21,4 +21,5 @@ struct BoolState {
     var isFavPlace: Bool = false
     var isMarkPlace: Bool = false
     var isExpandedBottomSheet: Bool = false
+    var isOpenedDetailPlace: Bool = false
 }

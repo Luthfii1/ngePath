@@ -16,8 +16,8 @@ class LocationViewModel: ObservableObject {
     @Published var mapRegion: MKCoordinateRegion = MKCoordinateRegion()
     // set mapCamera
     @Published var mapCamera: MapCameraPosition
-    // set mapSelection
-    @Published var mapSelection: MKMapItem?
+    // showMap
+    @Published var showMap: Bool
     
     // State Var
     @Published var state: VarState {
@@ -45,6 +45,7 @@ class LocationViewModel: ObservableObject {
         self.mapLocation = sampleSavePlaces.first!
         self.mapRegion = .userRegion
         self.mapCamera = .region(.userRegion)
+        self.showMap = false
         
         self.state = VarState()
         self.boolState = BoolState()
@@ -60,8 +61,12 @@ class LocationViewModel: ObservableObject {
         boolState.isMarkPlace.toggle()
     }
     
-    func toggleFavPlace() {
-        boolState.isFavPlace.toggle()
+    func toggleFavPlace(create: Bool) {
+        create ? boolState.isFavPlace.toggle() : mapLocation.isFavorite.toggle()
+    }
+    
+    func toggleOpenPlace() {
+        boolState.isOpenedDetailPlace.toggle()
     }
     
     func cleanSearch() {
@@ -79,7 +84,7 @@ class LocationViewModel: ObservableObject {
         let locations = inputUser.textSearch.isEmpty ? sampleResult : sampleResult.filter { $0.name.lowercased().contains(inputUser.textSearch.lowercased()) }
         let category = state.setCategory
         
-        print("searchResult: ", locations)
+//        print("searchResult: ", locations)
         
         if category.isEmpty {
             filteredPlaces = locations

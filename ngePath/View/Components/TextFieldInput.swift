@@ -38,7 +38,7 @@ struct TextFieldInput: View {
                     .padding(.horizontal, 5)
                     .onTapGesture {
                         vm.cleanSearch()
-                        print("remove: ", vm.inputUser.textSearch)
+//                        print("remove: ", vm.inputUser.textSearch)
                     }
             }
         }

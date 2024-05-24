@@ -10,108 +10,169 @@ import MapKit
 
 struct MapView: View {
     @EnvironmentObject private var vm: LocationViewModel
+    @StateObject var locationManager: LocationManager = .init()
     
     var body: some View {
-        GeometryReader { geometry in
-            Map(position: $vm.mapCamera, selection: $vm.mapSelection) {
-                // User Location
-                Annotation("My Location", coordinate: .userLoct) {
-                    UserAnotation()
-                }
-                // End of User Location
-                
-                // Filtered Locations
-                ForEach(vm.filteredPlaces, id: \.name) { item in
-                    Marker(item.name, coordinate: item.coordinate)
-                }
-                // End of Filtered Locations
-            }
-            .mapControls {
-                MapPitchToggle()
-                MapCompass()
-                MapUserLocationButton()
-            }
-            .overlay(alignment: .bottomTrailing) {
-                VStack(spacing: 10) {
-                    Button(action: {
-                        vm.toggleMarkPlace()
-                        print("setplace: ", vm.boolState.isMarkPlace)
-                    }, label: {
-                        HStack(alignment: .center) {
-                            Image(systemName: "scope")
-                                .foregroundStyle(.white)
-                            
-                            Text("Mark Place")
-                                .font(.subheadline)
-                                .bold()
-                                .foregroundStyle(.white)
+        VStack {
+            if vm.showMap {
+                GeometryReader { geometry in
+                    Map(position: $vm.mapCamera) {
+                        // User Location
+                        Annotation("My Location", coordinate: CLLocationCoordinate2D(latitude: locationManager.userLocation.latitude, longitude: locationManager.userLocation.longitude)) {
+                            UserAnotation()
                         }
-                        .padding()
-                        .background(Color("PrimaryBlue"))
-                        .clipShape(RoundedRectangle(cornerRadius: 20.0))
-                    })
-                }
-                .buttonBorderShape(.circle)
-                .padding(.horizontal, geometry.size.width * 0.03)
-            }
-            .overlay(alignment: .bottomLeading) {
-                DraggableSheetView()
-            }
-            .sheet(isPresented: $vm.boolState.isMarkPlace) {
-                VStack(alignment: .leading) {
-                    HeaderSheet()
-                        .padding(.bottom, 20)
-                    
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack {
-                            CurrentPlace()
-                                .padding(6)
-                            
-                            SetCategories()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(6)
-                            
-                            SetStarRate()
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(6)
-                            
-                            VStack(alignment: .leading) {
-                                Title(text: "Add Story")
-                                    .font(.title)
-                                    .padding(.vertical, 8)
-                                
-                                TextFieldInput(placeholder: "Story Title", isSearching: false)
-                                    .frame(width: 200)
-                                
-                                TextFieldInput(placeholder: "Description Title", isSearching: false)
-                                    .lineLimit(5...10)
-                                
-                                SetImages()
+                        // End of User Location
+                        
+                        // Filtered Locations
+                        ForEach(vm.filteredPlaces, id: \.name) { item in
+                            Annotation("", coordinate: item.coordinate) {
+                                LocationMapAnnotationView(name: item.name)
+                                    .onTapGesture {
+                                        withAnimation(.bouncy, {
+                                            vm.mapLocation = item
+                                        })
+                                    }
+                                    .scaleEffect(vm.mapLocation.UUID == item.UUID ? 1 : 0.7)
                             }
-                            .padding(12)
                         }
+                        // End of Filtered Locations
                     }
-                    
-                    HStack(alignment: .center) {
-                        Spacer()
-                        
-                        Button(action: {
-                            print("Submit")
-                        }, label: {
-                            Text("Submit")
-                                .font(.title3)
-                                .bold()
-                                .foregroundStyle(.white)
+                    .onAppear(perform: {
+                        vm.mapCamera = .region(MKCoordinateRegion(center: locationManager.userLocation, latitudinalMeters: 10000, longitudinalMeters: 10000))
+                    })
+                    .mapControls {
+                        MapPitchToggle()
+                        MapCompass()
+                        MapUserLocationButton()
+                    }
+                    .overlay(alignment: .top) {
+        //                if vm.mapLocation !== nil {
+                            HStack(alignment: .center, content: {
+                                Image(systemName: vm.mapLocation.category.logo)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 40, height: 40)
+                                    .foregroundStyle(Color.primaryBlue)
+                                
+                                Text(vm.mapLocation.name)
+                                    .font(.title2)
+                                    .bold()
+                                    .padding(.horizontal, 4)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    vm.toggleOpenPlace()
+                                }, label: {
+                                    Text("See More")
+                                        .padding()
+                                        .background(Color.secondaryBlue)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                })
+                            })
+                            .padding()
+                            .padding(.horizontal, 20)
+                            .background(.white)
+                            .frame(maxWidth: geometry.size.width * 0.4)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .padding()
+        //                }
+                    }
+                    .overlay(alignment: .bottomTrailing) {
+                        VStack(spacing: 10) {
+                            Button(action: {
+                                vm.toggleMarkPlace()
+        //                        print("setplace: ", vm.boolState.isMarkPlace)
+                            }, label: {
+                                HStack(alignment: .center) {
+                                    Image(systemName: "scope")
+                                        .foregroundStyle(.white)
+                                    
+                                    Text("Mark Place")
+                                        .font(.subheadline)
+                                        .bold()
+                                        .foregroundStyle(.white)
+                                }
                                 .padding()
-                                .background(Color.primaryBlue)
-                                .clipShape(RoundedRectangle(cornerRadius: 10))
-                        })
-                        
-                        Spacer()
+                                .background(Color("PrimaryBlue"))
+                                .clipShape(RoundedRectangle(cornerRadius: 20.0))
+                            })
+                        }
+                        .buttonBorderShape(.circle)
+                        .padding(.horizontal, geometry.size.width * 0.03)
+                    }
+                    .overlay(alignment: .bottomLeading) {
+                        DraggableSheetView()
+                    }
+                    .sheet(isPresented: $vm.boolState.isMarkPlace) {
+                        VStack(alignment: .leading) {
+                            HeaderSheet(isCreate: false)
+                                .padding(.bottom, 20)
+                            
+                            ScrollView(.vertical, showsIndicators: false) {
+                                VStack {
+                                    CurrentPlace()
+                                        .padding(6)
+                                    
+                                    SetCategories()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(6)
+                                    
+                                    SetStarRate()
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(6)
+                                    
+                                    VStack(alignment: .leading) {
+                                        Title(text: "Add Story")
+                                            .font(.title)
+                                            .padding(.vertical, 8)
+                                        
+                                        TextFieldInput(placeholder: "Story Title", isSearching: false)
+                                            .frame(width: 200)
+                                        
+                                        TextFieldInput(placeholder: "Description Title", isSearching: false)
+                                            .lineLimit(5...10)
+                                        
+                                        SetImages()
+                                    }
+                                    .padding(12)
+                                }
+                            }
+                            
+                            HStack(alignment: .center) {
+                                Spacer()
+                                
+                                Button(action: {
+        //                            print("Submit")
+                                }, label: {
+                                    Text("Submit")
+                                        .font(.title3)
+                                        .bold()
+                                        .foregroundStyle(.white)
+                                        .padding()
+                                        .background(Color.primaryBlue)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                })
+                                
+                                Spacer()
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding()
+                    }
+                    .sheet(isPresented: $vm.boolState.isOpenedDetailPlace){
+                        DetailPlace()
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding()
+            } else {
+                ProgressView()
+                    .progressViewStyle(.circular)
+                Text("Fetching Your Location")
+            }
+        }
+        .onChange(of: locationManager.isLocationAuthorized){ oldValue, newValue in
+            if newValue {
+                vm.showMap = true
             }
         }
     }
@@ -141,46 +202,6 @@ struct UserAnotation: View {
     }
 }
 
-struct HeaderSheet: View {
-    @EnvironmentObject private var vm: LocationViewModel
-    
-    var body: some View {
-        VStack {
-            HStack(alignment: .center) {
-                Button(action: {
-                    vm.toggleMarkPlace()
-                }, label: {
-                    Text("Cancel")
-                        .font(.title3)
-                        .foregroundStyle(Color.primaryBlue)
-                })
-                
-                Spacer()
-                
-                Text("Add New Place")
-                    .font(.title3)
-                    .bold()
-                
-                Spacer()
-                
-                Image(systemName: vm.boolState.isFavPlace ? "heart.fill" : "heart")
-                    .foregroundStyle(.primaryBlue)
-                    .font(.title2)
-                    .onTapGesture {
-                        vm.toggleFavPlace()
-                    }
-            }
-            
-            GeometryReader { geometry in
-                Rectangle()
-                    .frame(width: geometry.size.width, height: 1)
-                    .foregroundColor(.gray)
-            }
-            .frame(height: 1)
-        }
-    }
-}
-
 struct CurrentPlace: View {
     @EnvironmentObject private var vm: LocationViewModel
     
@@ -193,7 +214,7 @@ struct CurrentPlace: View {
                 TextFieldInput(placeholder: "Apple Developer Acadeny", isSearching: false)
                 
                 Button(action: {
-                    print("Refresh")
+//                    print("Refresh")
                 }, label: {
                     Image(systemName: "arrow.clockwise")
                         .font(.title2)
@@ -252,7 +273,7 @@ struct SetImages: View {
             
             HStack (alignment: .center){
                 Button(action: {
-                    print("Images")
+//                    print("Images")
                 }, label: {
                     Image(systemName: "photo.stack")
                         .resizable()
@@ -272,7 +293,7 @@ struct SetImages: View {
                     HStack (spacing: 8) {
                         ForEach(photos, id: \.name) { photo in
                             Button(action: {
-                                print(photo.name)
+//                                print(photo.name)
                             }, label: {
                                 Image(photo.logo)
                                     .resizable()

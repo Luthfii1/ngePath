@@ -25,7 +25,7 @@ struct DraggableSheetView: View {
                     TextFieldInput(placeholder: "Search Place Here", isSearching: true)
                         .padding(.vertical, 10)
                         .onChange(of: vm.inputUser.textSearch) { oldValue, newValue in
-                            print("new val: ", newValue)
+                            //                            print("new val: ", newValue)
                             if !newValue.isEmpty {
                                 vm.state.searchResult = vm.sampleResult.filter { $0.name.lowercased().contains(newValue.lowercased()) }
                             } else {
@@ -39,27 +39,30 @@ struct DraggableSheetView: View {
                         }
                     
                     if vm.boolState.isExpandedBottomSheet {
-                        VStack {
-                            // Categories of places
-                            VStack(alignment: .leading) {
-                                Title(text: "Categories")
-                                    .font(.title)
-                                JustifyMappingComponent(isJustifyBetween: true)
-                            }
-                            
-                            // Favorite Places
-                            VStack(alignment: .leading) {
-                                Title(text: "My Fav Place")
-                                    .font(.title)
+                        ScrollView(.vertical, showsIndicators: false) {
+                            VStack {
+                                // Categories of places
+                                VStack(alignment: .leading) {
+                                    Title(text: "Categories")
+                                        .font(.title)
+                                    JustifyMappingComponent(isJustifyBetween: true)
+                                }
                                 
-                                ListFavPlace()
-                                    .padding(10)
+                                // Favorite Places
+                                VStack(alignment: .leading) {
+                                    Title(text: "My Fav Place")
+                                        .font(.title)
+                                    
+                                    ListFavPlace()
+                                        .padding(10)
+                                }
                             }
                         }
                     }
                 }
                 .frame(width: geometry.size.width * 0.3, height: self.maxHeight, alignment: .top)
                 .padding()
+                .padding(.bottom, 50)
                 .background(Color.white)
                 .cornerRadius(20)
                 .shadow(color: Color("SecondaryBlue").opacity(10), radius: 10)
@@ -108,3 +111,4 @@ struct SheetDragLine: View {
         .foregroundStyle(.black)
     }
 }
+

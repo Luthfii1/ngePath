@@ -21,8 +21,8 @@ extension MKCoordinateRegion {
     static var userRegion: MKCoordinateRegion {
         return .init(
             center: .userLoct,
-            latitudinalMeters: 1000,
-            longitudinalMeters: 1000
+            latitudinalMeters: 10000,
+            longitudinalMeters: 10000
         )
     }
 }
@@ -32,11 +32,11 @@ enum CategoryType: String {
     case coffeeshop, restaurant, publicSpace, library
 }
 
-class SavePlaces: Identifiable {
+class SavePlaces: Identifiable, ObservableObject {
     var name: String
     var coordinate: CLLocationCoordinate2D
     var category: Categories
-    var isFavorite: Bool
+    @Published var isFavorite: Bool
     var address: String
     
     init(name: String, coordinate: CLLocationCoordinate2D, category: Categories, isFavorite: Bool = false, address: String) {
