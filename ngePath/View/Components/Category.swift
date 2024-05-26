@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Category: View {
+    @EnvironmentObject private var vm: LocationViewModel
     var logo: String
     var name: String
     @Binding var setCategory: [String]
@@ -15,39 +16,57 @@ struct Category: View {
     
     var body: some View {
         Button {
-//            check the setCategory has already save the name or not
-            if setCategory.contains(name) {
-                setCategory.removeAll { $0 == name }
-                isPressed = false
-            } else {
-                setCategory.append(name)
-                isPressed = true
+            //            check the setCategory has already save the name or not
+            if !vm.boolState.isOpenedDetailPlace{
+                if setCategory.contains(name) {
+                    setCategory.removeAll { $0 == name }
+                    isPressed = false
+                } else {
+                    setCategory.append(name)
+                    isPressed = true
+                }
             }
         } label: {
             VStack (alignment: .center, spacing: 5) {
                 Image(systemName: logo)
                     .resizable()
                     .frame(width: 30, height: 30)
-                    .foregroundStyle(isPressed ? 
-                        .white : Color("PrimaryBlue"))
+                    .foregroundStyle(
+                        vm.boolState.isOpenedDetailPlace
+                        ? (vm.selectedItem.category.name.rawValue == name
+                           ? .white
+                           : Color("PrimaryBlue"))
+                        : (isPressed
+                           ? .white
+                           : Color("PrimaryBlue"))
+                    )
                     .padding()
-                    .background(isPressed ? 
-                                Color("BGButtonPressed") : Color("SecondaryBlue"))
+                    .background(
+                        vm.boolState.isOpenedDetailPlace
+                        ? (vm.selectedItem.category.name.rawValue == name
+                           ? Color("BGButtonPressed")
+                           : Color("SecondaryBlue"))
+                        :
+                            (isPressed
+                             ? Color("BGButtonPressed")
+                             : Color("SecondaryBlue")))
                     .clipShape(Circle())
                 
                 Text(name.uppercasedFirstLetter.spacedUppercased)
                     .font(.subheadline)
-                    .foregroundStyle(isPressed ? 
-                                     Color("PrimaryBlue") : .black)
+                    .foregroundStyle(
+                        vm.boolState.isOpenedDetailPlace
+                        ? (vm.selectedItem.category.name.rawValue == name
+                           ? Color("PrimaryBlue") : .black)
+                        :
+                            (isPressed ?
+                             Color("PrimaryBlue") : .black))
             }
         }
     }
 }
 
-func isCategoryPressed(setCategory: String, name: String) -> Bool {
-    return setCategory == name
-}
-
 #Preview {
     Category(logo: "bird.fill", name: "n", setCategory: .constant(["Burung"]))
+        .environmentObject(LocationManager())
 }

@@ -11,7 +11,14 @@ import SwiftUI
 
 class LocationViewModel: ObservableObject {
     // Set mapLocation
-    @Published var mapLocation: SavePlaces
+    @Published var selectedItem: SavePlaces {
+        didSet {
+            withAnimation(.easeInOut) {
+                let newRegion = MKCoordinateRegion(center: selectedItem.coordinate, latitudinalMeters: 10000, longitudinalMeters: 10000)
+                mapCamera = MapCameraPosition.region(newRegion)
+            }
+        }
+    }
     // Set mapRegion
     @Published var mapRegion: MKCoordinateRegion = MKCoordinateRegion()
     // set mapCamera
@@ -40,9 +47,9 @@ class LocationViewModel: ObservableObject {
     }
     // Filtered Places
     @Published var filteredPlaces: [SavePlaces] = []
-    
+    @Published var imagesStory: [String] = []
     init() {
-        self.mapLocation = sampleSavePlaces.first!
+        self.selectedItem = sampleSavePlaces.first!
         self.mapRegion = .userRegion
         self.mapCamera = .region(.userRegion)
         self.showMap = false
@@ -62,11 +69,36 @@ class LocationViewModel: ObservableObject {
     }
     
     func toggleFavPlace(create: Bool) {
-        create ? boolState.isFavPlace.toggle() : mapLocation.isFavorite.toggle()
+        create ? boolState.isFavPlace.toggle() : selectedItem.isFavorite.toggle()
     }
     
     func toggleOpenPlace() {
         boolState.isOpenedDetailPlace.toggle()
+    }
+    
+    func getAllImagesStory(isStory: Bool) -> [Gallery] {
+        var galleryImages: [Gallery] = []
+        var seenTitles: Set<String> = Set()
+        
+        // Iterate through stories and images
+        if let stories = selectedItem.stories {
+            for story in stories {
+                if (isStory) {
+                    if let images = story.images, !seenTitles.contains(story.title) {
+                        if let firstImage = images.first {
+                            galleryImages.append(firstImage)
+                            seenTitles.insert(story.title)
+                        }
+                    }
+                } else {
+                    if let images = story.images {
+                        galleryImages.append(contentsOf: images)
+                    }
+                }
+            }
+        }
+        
+        return galleryImages
     }
     
     func cleanSearch() {
@@ -84,7 +116,7 @@ class LocationViewModel: ObservableObject {
         let locations = inputUser.textSearch.isEmpty ? sampleResult : sampleResult.filter { $0.name.lowercased().contains(inputUser.textSearch.lowercased()) }
         let category = state.setCategory
         
-//        print("searchResult: ", locations)
+        //        print("searchResult: ", locations)
         
         if category.isEmpty {
             filteredPlaces = locations
@@ -99,4 +131,18 @@ class LocationViewModel: ObservableObject {
         
         filteredPlaces = result
     }
+    
+    //    func getAllImagesStory(isGallery: Bool) -> Gallery {
+    //        if isGallery {
+    //            guard let stories = selectedItem.stories else {
+    //                return Gallery(logo: "", name: "") // Return an empty Gallery if stories is nil
+    //            }
+    //            let images = stories.compactMap { $0.images }.flatMap { $0 }
+    //            // Assuming you want to return the first image as logo and "All Images" as name
+    //            let logo = images
+    //            return Gallery(logo: logo, name: "All Images")
+    //        } else {
+    //            return sampleGalleries // Return sampleGalleries if it's not a gallery
+    //        }
+    //    }
 }

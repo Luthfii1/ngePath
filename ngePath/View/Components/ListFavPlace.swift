@@ -8,12 +8,18 @@
 import SwiftUI
 
 struct ListFavPlace: View {
-    @State private var favPlaces: [SavePlaces] = sampleSavePlaces.filter{ $0.isFavorite }
+    @EnvironmentObject private var vm: LocationViewModel
     
     var body: some View {
+        let favPlaces: [SavePlaces] = vm.sampleResult.filter{ $0.isFavorite }
+        
         VStack (alignment: .leading, spacing: 20) {
             ForEach (favPlaces, id: \.name) { place in
-                FavPlace(logo: place.category.logo, loctName: place.name, loctPreview: place.address)
+                Button(action: {
+                    vm.selectedItem = place
+                }, label: {
+                    FavPlace(logo: place.category.logo, loctName: place.name, loctPreview: place.address)
+                })
                 
                 Divider()
             }
@@ -23,4 +29,5 @@ struct ListFavPlace: View {
 
 #Preview {
     ListFavPlace()
+        .environmentObject(LocationViewModel())
 }

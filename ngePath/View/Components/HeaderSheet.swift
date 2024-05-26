@@ -16,6 +16,7 @@ struct HeaderSheet: View {
             HStack(alignment: .center) {
                 Button(action: {
                     isCreate ? vm.toggleMarkPlace() : vm.toggleOpenPlace()
+                    isCreate ? print(vm.boolState.isMarkPlace) : print("detail: ", vm.boolState.isOpenedDetailPlace)
                 }, label: {
                     Text("Cancel")
                         .font(.title3)
@@ -24,7 +25,7 @@ struct HeaderSheet: View {
                 
                 Spacer()
                 
-                Text(isCreate ? "Add New Place" : vm.mapLocation.name)
+                Text(isCreate ? "Add New Place" : vm.selectedItem.name)
                     .font(.title3)
                     .bold()
                 
@@ -43,7 +44,7 @@ struct HeaderSheet: View {
     }
     
     private var favoriteIcon: some View {
-        Image(systemName: isCreate ? (vm.boolState.isFavPlace ? "heart.fill" : "heart") : (vm.mapLocation.isFavorite == true ? "heart.fill" : "heart"))
+        Image(systemName: isCreate ? (vm.boolState.isFavPlace ? "heart.fill" : "heart") : (vm.selectedItem.isFavorite == true ? "heart.fill" : "heart"))
             .foregroundStyle(.primaryBlue)
             .font(.title2)
             .onTapGesture {

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FavPlace: View {
+    @EnvironmentObject private var vm: LocationViewModel
     var logo: String
     var loctName: String
     var loctPreview: String
@@ -40,4 +41,5 @@ struct FavPlace: View {
 
 #Preview {
     FavPlace(logo: "cup.and.saucer.fill", loctName: "Kopi Nako BSD", loctPreview: "Jl. Pagedangan, BSD, South Tangerang")
+        .environmentObject(LocationViewModel())
 }

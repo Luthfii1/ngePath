@@ -15,6 +15,8 @@
 		DD29DC7B2C00CCB400548494 /* LocationMapAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29DC7A2C00CCB400548494 /* LocationMapAnnotationView.swift */; };
 		DD29DC7D2C00E9CA00548494 /* HeaderSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29DC7C2C00E9CA00548494 /* HeaderSheet.swift */; };
 		DD29DC7F2C00F9DD00548494 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29DC7E2C00F9DD00548494 /* LocationManager.swift */; };
+		DD29DC812C01AE0600548494 /* ScrollableImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29DC802C01AE0600548494 /* ScrollableImages.swift */; };
+		DD29DC832C031FE600548494 /* SelectImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD29DC822C031FE600548494 /* SelectImage.swift */; };
 		DD3C560E2BFC9FED001179BA /* SampleDatas.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C560D2BFC9FED001179BA /* SampleDatas.swift */; };
 		DD3C56122BFDCBB4001179BA /* LocationsFilterMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3C56112BFDCBB4001179BA /* LocationsFilterMapping.swift */; };
 		DD6C5D522BFB667500DAC494 /* DraggableSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD6C5D512BFB667500DAC494 /* DraggableSheetView.swift */; };
@@ -44,6 +46,8 @@
 		DD29DC7A2C00CCB400548494 /* LocationMapAnnotationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationMapAnnotationView.swift; sourceTree = "<group>"; };
 		DD29DC7C2C00E9CA00548494 /* HeaderSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderSheet.swift; sourceTree = "<group>"; };
 		DD29DC7E2C00F9DD00548494 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		DD29DC802C01AE0600548494 /* ScrollableImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableImages.swift; sourceTree = "<group>"; };
+		DD29DC822C031FE600548494 /* SelectImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectImage.swift; sourceTree = "<group>"; };
 		DD3C560D2BFC9FED001179BA /* SampleDatas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDatas.swift; sourceTree = "<group>"; };
 		DD3C56112BFDCBB4001179BA /* LocationsFilterMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsFilterMapping.swift; sourceTree = "<group>"; };
 		DD6C5D512BFB667500DAC494 /* DraggableSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableSheetView.swift; sourceTree = "<group>"; };
@@ -97,6 +101,8 @@
 				DD29DC732BFF7C4C00548494 /* DetailPlace.swift */,
 				DD29DC7A2C00CCB400548494 /* LocationMapAnnotationView.swift */,
 				DD29DC7C2C00E9CA00548494 /* HeaderSheet.swift */,
+				DD29DC802C01AE0600548494 /* ScrollableImages.swift */,
+				DD29DC822C031FE600548494 /* SelectImage.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -252,6 +258,7 @@
 				DDB894202BF624800045131D /* UIDevice+Extension.swift in Sources */,
 				DDFC8C8B2BF7469C002E40DE /* SearchPlace.swift in Sources */,
 				DD29DC7D2C00E9CA00548494 /* HeaderSheet.swift in Sources */,
+				DD29DC832C031FE600548494 /* SelectImage.swift in Sources */,
 				DD6C5D5C2BFB753200DAC494 /* TextFieldInput.swift in Sources */,
 				DD29DC6E2BFF046200548494 /* State.swift in Sources */,
 				DD6C5D5E2BFBC7CD00DAC494 /* FavPlace.swift in Sources */,
@@ -260,6 +267,7 @@
 				DD29DC702BFF098300548494 /* CreateNewPlace.swift in Sources */,
 				DD6C5D602BFBC9A300DAC494 /* ListFavPlace.swift in Sources */,
 				DDB893E72BF4A29A0045131D /* ngePathApp.swift in Sources */,
+				DD29DC812C01AE0600548494 /* ScrollableImages.swift in Sources */,
 				DD29DC742BFF7C4C00548494 /* DetailPlace.swift in Sources */,
 				DD6C5D5A2BFB737500DAC494 /* JustifyMappingComponent.swift in Sources */,
 				DD6C5D522BFB667500DAC494 /* DraggableSheetView.swift in Sources */,

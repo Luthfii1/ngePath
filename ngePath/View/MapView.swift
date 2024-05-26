@@ -11,12 +11,13 @@ import MapKit
 struct MapView: View {
     @EnvironmentObject private var vm: LocationViewModel
     @StateObject var locationManager: LocationManager = .init()
+    @State private var dummy: MapCameraPosition = .region(.userRegion)
     
     var body: some View {
         VStack {
             if vm.showMap {
                 GeometryReader { geometry in
-                    Map(position: $vm.mapCamera) {
+                    Map(position: $vm.mapCamera /*$dummy*/) {
                         // User Location
                         Annotation("My Location", coordinate: CLLocationCoordinate2D(latitude: locationManager.userLocation.latitude, longitude: locationManager.userLocation.longitude)) {
                             UserAnotation()
@@ -29,16 +30,18 @@ struct MapView: View {
                                 LocationMapAnnotationView(name: item.name)
                                     .onTapGesture {
                                         withAnimation(.bouncy, {
-                                            vm.mapLocation = item
+                                            vm.selectedItem = item
                                         })
                                     }
-                                    .scaleEffect(vm.mapLocation.UUID == item.UUID ? 1 : 0.7)
+                                    .scaleEffect(vm.selectedItem.UUID == item.UUID ? 1 : 0.7)
                             }
                         }
                         // End of Filtered Locations
                     }
                     .onAppear(perform: {
                         vm.mapCamera = .region(MKCoordinateRegion(center: locationManager.userLocation, latitudinalMeters: 10000, longitudinalMeters: 10000))
+                        
+                        print(vm.mapCamera)
                     })
                     .mapControls {
                         MapPitchToggle()
@@ -48,13 +51,13 @@ struct MapView: View {
                     .overlay(alignment: .top) {
         //                if vm.mapLocation !== nil {
                             HStack(alignment: .center, content: {
-                                Image(systemName: vm.mapLocation.category.logo)
+                                Image(systemName: vm.selectedItem.category.logo)
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 40, height: 40)
                                     .foregroundStyle(Color.primaryBlue)
                                 
-                                Text(vm.mapLocation.name)
+                                Text(vm.selectedItem.name)
                                     .font(.title2)
                                     .bold()
                                     .padding(.horizontal, 4)
@@ -63,6 +66,7 @@ struct MapView: View {
                                 
                                 Button(action: {
                                     vm.toggleOpenPlace()
+                                    print("see more: ", vm.boolState.isOpenedDetailPlace)
                                 }, label: {
                                     Text("See More")
                                         .padding()
@@ -82,7 +86,7 @@ struct MapView: View {
                         VStack(spacing: 10) {
                             Button(action: {
                                 vm.toggleMarkPlace()
-        //                        print("setplace: ", vm.boolState.isMarkPlace)
+                                print("setplace: ", vm.boolState.isMarkPlace)
                             }, label: {
                                 HStack(alignment: .center) {
                                     Image(systemName: "scope")
@@ -106,7 +110,7 @@ struct MapView: View {
                     }
                     .sheet(isPresented: $vm.boolState.isMarkPlace) {
                         VStack(alignment: .leading) {
-                            HeaderSheet(isCreate: false)
+                            HeaderSheet(isCreate: true)
                                 .padding(.bottom, 20)
                             
                             ScrollView(.vertical, showsIndicators: false) {
@@ -258,8 +262,6 @@ struct SetStarRate: View {
 }
 
 struct SetImages: View {
-    @State private var photos: [Gallery] = sampleGalleries
-    
     var body: some View {
         VStack(alignment: .leading){
             Text("Images")
@@ -288,21 +290,7 @@ struct SetImages: View {
                     .frame(height: 100)
                     .padding(.horizontal, 20)
                 
-                
-                ScrollView (.horizontal, showsIndicators: false) {
-                    HStack (spacing: 8) {
-                        ForEach(photos, id: \.name) { photo in
-                            Button(action: {
-//                                print(photo.name)
-                            }, label: {
-                                Image(photo.logo)
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                            })
-                        }
-                    }
-                }
+                ScrollableImages(story: false, gallery: false)
             }
         }
     }

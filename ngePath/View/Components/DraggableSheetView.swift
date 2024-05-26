@@ -56,6 +56,7 @@ struct DraggableSheetView: View {
                                     ListFavPlace()
                                         .padding(10)
                                 }
+                                .padding(.vertical, 20)
                             }
                         }
                     }

@@ -36,16 +36,21 @@ class SavePlaces: Identifiable, ObservableObject {
     var name: String
     var coordinate: CLLocationCoordinate2D
     var category: Categories
-    @Published var isFavorite: Bool
+    @Published var isFavorite: Bool = false
     var address: String
+    var rate: Double
+    var stories: [Story]?
     
-    init(name: String, coordinate: CLLocationCoordinate2D, category: Categories, isFavorite: Bool = false, address: String) {
-        self.name = name
-        self.coordinate = coordinate
-        self.category = category
-        self.isFavorite = isFavorite
-        self.address = SavePlaces.minimizedAddress(address)
-    }
+    init(name: String, coordinate: CLLocationCoordinate2D, category: Categories, rate: Double, isFavorite: Bool = false, address: String, stories: [Story]? = nil) {
+            self.name = name
+            self.coordinate = coordinate
+            self.category = category
+            self.isFavorite = isFavorite
+            self.rate = rate
+            self.address = SavePlaces.minimizedAddress(address)
+            self.stories = stories ?? []
+        }
+    
     
     static func minimizedAddress(_ address: String) -> String {
         let components = address.components(separatedBy: ",")
@@ -76,3 +81,16 @@ class SavePlaces: Identifiable, ObservableObject {
     }
 }
 
+class Story {
+    var date: Date
+    var title: String
+    var description: String?
+    var images: [Gallery]?
+    
+    init(date: Date, title: String, description: String? = nil, images: [Gallery]? = nil) {
+        self.date = date
+        self.title = title
+        self.description = description
+        self.images = images
+    }
+}
