@@ -39,7 +39,7 @@ struct DetailPlace: View {
                         Image(systemName: "star.fill")
                             .resizable()
                             .frame(maxWidth: 60, maxHeight: 60)
-                            .foregroundStyle(Color.primaryBlue)
+                            .foregroundStyle(Color.primaryPink)
                         
                         Text(String(vm.selectedItem.rate))
                             .font(.largeTitle)

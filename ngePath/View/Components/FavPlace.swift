@@ -19,9 +19,9 @@ struct FavPlace: View {
                 Image(systemName: logo)
                     .resizable()
                     .frame(width: 20, height: 20)
-                    .foregroundStyle(Color.primaryBlue)
+                    .foregroundStyle(Color.primaryPink)
                     .padding()
-                    .background(Color.secondaryBlue)
+                    .background(Color.secondaryPink)
                     .clipShape(Circle())
                 
                 VStack (alignment: .leading) {

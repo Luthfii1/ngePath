@@ -8,18 +8,17 @@
 import SwiftUI
 
 struct SelectImage: View {
-    var imageName: String
-    @Binding var isShowingImage: Bool
+    @EnvironmentObject private var vm: LocationViewModel
     
     var body: some View {
         ZStack {
-            Image(imageName)
+            Image(vm.state.selectedImage)
                 .resizable()
-                .aspectRatio(contentMode: .fill)
+                .aspectRatio(contentMode: .fit)
                 .edgesIgnoringSafeArea(.all)
             
             Button(action: {
-                isShowingImage.toggle()
+                vm.boolState.isShowingImage.toggle()
             }, label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 30))
@@ -33,12 +32,10 @@ struct SelectImage: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(.leading, 50)
         }
-        .onAppear(perform: {
-            print(imageName)
-        })
+        .background(.black)
     }
 }
 
 #Preview {
-    SelectImage(imageName: "image1", isShowingImage: .constant(false))
+    SelectImage()
 }

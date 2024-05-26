@@ -23,8 +23,6 @@ class LocationViewModel: ObservableObject {
     @Published var mapRegion: MKCoordinateRegion = MKCoordinateRegion()
     // set mapCamera
     @Published var mapCamera: MapCameraPosition
-    // showMap
-    @Published var showMap: Bool
     
     // State Var
     @Published var state: VarState {
@@ -52,7 +50,6 @@ class LocationViewModel: ObservableObject {
         self.selectedItem = sampleSavePlaces.first!
         self.mapRegion = .userRegion
         self.mapCamera = .region(.userRegion)
-        self.showMap = false
         
         self.state = VarState()
         self.boolState = BoolState()
@@ -62,6 +59,10 @@ class LocationViewModel: ObservableObject {
         self.inputUser = CreateNewPlace()
         
         self.filterPlaces()
+    }
+    
+    func setSelectedImage(image: String) {
+        state.selectedImage = image
     }
     
     func toggleMarkPlace() {

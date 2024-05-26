@@ -28,8 +28,6 @@ class LocationManager: NSObject, ObservableObject, MKMapViewDelegate, CLLocation
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let currentLocation = locations.last else{return}
         
-        print(currentLocation)
-        
         userLocation = .init(latitude: currentLocation.coordinate.latitude, longitude: currentLocation.coordinate.longitude)
         isLocationAuthorized = true
     }

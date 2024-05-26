@@ -35,21 +35,21 @@ struct Category: View {
                         vm.boolState.isOpenedDetailPlace
                         ? (vm.selectedItem.category.name.rawValue == name
                            ? .white
-                           : Color("PrimaryBlue"))
+                           : Color.primaryPink)
                         : (isPressed
                            ? .white
-                           : Color("PrimaryBlue"))
+                           : Color.primaryPink)
                     )
                     .padding()
                     .background(
                         vm.boolState.isOpenedDetailPlace
                         ? (vm.selectedItem.category.name.rawValue == name
-                           ? Color("BGButtonPressed")
-                           : Color("SecondaryBlue"))
+                           ? Color.primaryPink
+                           : Color.secondaryPink)
                         :
                             (isPressed
-                             ? Color("BGButtonPressed")
-                             : Color("SecondaryBlue")))
+                             ? Color.primaryPink
+                             : Color.secondaryPink))
                     .clipShape(Circle())
                 
                 Text(name.uppercasedFirstLetter.spacedUppercased)
@@ -57,10 +57,10 @@ struct Category: View {
                     .foregroundStyle(
                         vm.boolState.isOpenedDetailPlace
                         ? (vm.selectedItem.category.name.rawValue == name
-                           ? Color("PrimaryBlue") : .black)
+                           ? Color.primaryPink : .black)
                         :
                             (isPressed ?
-                             Color("PrimaryBlue") : .black))
+                             Color.primaryPink : .black))
             }
         }
     }

@@ -104,7 +104,7 @@ struct SheetDragLine: View {
         HStack {
             Spacer()
             Rectangle()
-                .foregroundStyle(Color("PrimaryBlue"))
+                .foregroundStyle(Color.primaryPink)
                 .frame(width: 100, height: 5)
             Spacer()
         }

@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ScrollableImages: View {
     @State private var photos: [Gallery] = sampleGalleries
-    @State private var isShowingImage: Bool = false
     var story: Bool
     var limitImages: Int?
     var gallery: Bool
@@ -21,57 +20,60 @@ struct ScrollableImages: View {
         let imageLimit = limitImages ?? sourcePhotos.count
         
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: 12 ) {
-                ForEach(Array(sourcePhotos.prefix(imageLimit).enumerated()), id: \.element.name) { index, photo in
-                    Button(action: {
-                        print(photo.logo)
-                        if !story {
-                            isShowingImage = true
-                        }
-                    }, label: {
-                        VStack(alignment: .leading) {
-                            ZStack {
-                                Image(photo.logo)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill) // Ensure the image fills the frame
-                                    .frame(width: 100, height: 100) // Set a fixed size for the image
-                                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                                    .padding(.bottom, 4) // Add padding to separate image from text
-                                
-                                if index == imageLimit - 1, sourcePhotos.count > imageLimit {
-                                    Text("+\(sourcePhotos.count - imageLimit)")
-                                        .font(.title)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .shadow(radius: 10)
-                                        .background(Color.black.opacity(0.7))
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .padding(8) // Add padding to make the indicator more visible
-                                        .offset(y: 30) // Adjust vertical position of the indicator
-                                }
+            HStack(alignment: .center) {
+                HStack(alignment: .top, spacing: 16 ) {
+                    ForEach(Array(sourcePhotos.prefix(imageLimit).enumerated()), id: \.element.name) { index, photo in
+                        Button(action: {
+                            if !story {
+                                vm.setSelectedImage(image: photo.logo)
+                                vm.boolState.isShowingImage = true
                             }
-                            
-                            if story {
-                                if let story = vm.selectedItem.stories?.first(where: { $0.images?.contains(where: { $0.name == photo.name }) == true }) {
-                                    Text(story.date, style: .date)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.gray)
+                        }, label: {
+                            VStack(alignment: .leading) {
+                                ZStack {
+                                    Image(photo.logo)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill) // Ensure the image fills the frame
+                                        .frame(width: 135, height: 135) // Set a fixed size for the image
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                                        .padding(.bottom, 4) // Add padding to separate image from text
                                     
-                                    Text(story.title)
-                                        .font(.title3)
-                                        .bold()
-                                        .foregroundStyle(.black)
-                                        .lineLimit(2)
-                                        .fixedSize(horizontal: false, vertical: true)
+                                    if index == imageLimit - 1, sourcePhotos.count > imageLimit {
+                                        Text("+\(sourcePhotos.count - imageLimit)")
+                                            .font(.largeTitle)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.white)
+                                            .shadow(radius: 10)
+                                            .background(Color.black.opacity(0.7))
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                            .padding(8) // Add padding to make the indicator more visible
+                                            .offset(y: 10) // Adjust vertical position of the indicator
+                                    }
+                                }
+                                
+                                if story {
+                                    if let story = vm.selectedItem.stories?.first(where: { $0.images?.contains(where: { $0.name == photo.name }) == true }) {
+                                        Text(story.date, style: .date)
+                                            .font(.subheadline)
+                                            .foregroundStyle(.gray)
+                                            .padding(.top, 8)
+                                        
+                                        Text(story.title)
+                                            .font(.title3)
+                                            .bold()
+                                            .foregroundStyle(.black)
+                                            .lineLimit(2)
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .multilineTextAlignment(.leading)
+                                    }
                                 }
                             }
-                        }
-                        .fullScreenCover(isPresented: $isShowingImage) {
-                            SelectImage(imageName: photo.logo, isShowingImage: $isShowingImage)
-                        }
-                        .frame(width: 120)
-                    })
+                            .frame(width: 135)
+                        })
+                    }
                 }
+                .frame(maxWidth: .infinity)
                 
                 if story {
                     Button(action: {
@@ -79,17 +81,22 @@ struct ScrollableImages: View {
                     }, label: {
                         VStack(alignment: .center) {
                             Image(systemName: "chevron.right")
-                                .font(.largeTitle)
+                                .foregroundStyle(Color.primaryPink)
+                                .font(.system(size: 50))
+                                .bold()
                                 .padding(.bottom, 5)
                             
                             Text("See More")
                                 .font(.callout)
+                                .foregroundStyle(Color.secondaryPink)
                         }
                     })
                     .padding(.horizontal)
                 }
             }
-            .frame(maxWidth: .infinity)
+        }
+        .fullScreenCover(isPresented: $vm.boolState.isShowingImage) {
+            SelectImage()
         }
         .frame(maxWidth: .infinity)
     }

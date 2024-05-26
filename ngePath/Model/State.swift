@@ -10,10 +10,12 @@ import Foundation
 class VarState: ObservableObject {
     @Published var setCategory: [String]
     @Published var searchResult: [SavePlaces]
+    @Published var selectedImage: String
     
-    init(setCategory: [String] = [], searchResult: [SavePlaces] = []) {
+    init(setCategory: [String] = [], searchResult: [SavePlaces] = [], selectedImage: String = "") {
         self.setCategory = setCategory
         self.searchResult = searchResult
+        self.selectedImage = selectedImage
     }
 }
 
@@ -22,4 +24,6 @@ struct BoolState {
     var isMarkPlace: Bool = false
     var isExpandedBottomSheet: Bool = false
     var isOpenedDetailPlace: Bool = false
+    var showMap: Bool = false
+    var isShowingImage: Bool = false
 }

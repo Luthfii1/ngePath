@@ -13,7 +13,7 @@ struct ngePathApp: App {
     
     var body: some Scene {
         WindowGroup {
-            MapView()
+            LandingPageView(isLoading: false)
                 .environmentObject(vm)
         }
     }

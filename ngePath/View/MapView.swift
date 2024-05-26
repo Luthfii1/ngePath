@@ -15,7 +15,7 @@ struct MapView: View {
     
     var body: some View {
         VStack {
-            if vm.showMap {
+            if vm.boolState.showMap {
                 GeometryReader { geometry in
                     Map(position: $vm.mapCamera /*$dummy*/) {
                         // User Location
@@ -40,8 +40,6 @@ struct MapView: View {
                     }
                     .onAppear(perform: {
                         vm.mapCamera = .region(MKCoordinateRegion(center: locationManager.userLocation, latitudinalMeters: 10000, longitudinalMeters: 10000))
-                        
-                        print(vm.mapCamera)
                     })
                     .mapControls {
                         MapPitchToggle()
@@ -55,7 +53,7 @@ struct MapView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 40, height: 40)
-                                    .foregroundStyle(Color.primaryBlue)
+                                    .foregroundStyle(Color.primaryPink)
                                 
                                 Text(vm.selectedItem.name)
                                     .font(.title2)
@@ -66,11 +64,11 @@ struct MapView: View {
                                 
                                 Button(action: {
                                     vm.toggleOpenPlace()
-                                    print("see more: ", vm.boolState.isOpenedDetailPlace)
                                 }, label: {
                                     Text("See More")
+                                        .foregroundStyle(Color.primaryPink)
                                         .padding()
-                                        .background(Color.secondaryBlue)
+                                        .background(Color.secondaryPink)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                 })
                             })
@@ -86,7 +84,6 @@ struct MapView: View {
                         VStack(spacing: 10) {
                             Button(action: {
                                 vm.toggleMarkPlace()
-                                print("setplace: ", vm.boolState.isMarkPlace)
                             }, label: {
                                 HStack(alignment: .center) {
                                     Image(systemName: "scope")
@@ -98,7 +95,7 @@ struct MapView: View {
                                         .foregroundStyle(.white)
                                 }
                                 .padding()
-                                .background(Color("PrimaryBlue"))
+                                .background(Color.primaryPink)
                                 .clipShape(RoundedRectangle(cornerRadius: 20.0))
                             })
                         }
@@ -154,7 +151,7 @@ struct MapView: View {
                                         .bold()
                                         .foregroundStyle(.white)
                                         .padding()
-                                        .background(Color.primaryBlue)
+                                        .background(Color.primaryPink)
                                         .clipShape(RoundedRectangle(cornerRadius: 10))
                                 })
                                 
@@ -169,14 +166,13 @@ struct MapView: View {
                     }
                 }
             } else {
-                ProgressView()
-                    .progressViewStyle(.circular)
-                Text("Fetching Your Location")
+                LandingPageView(isLoading: true)
             }
         }
+        .navigationBarBackButtonHidden(true)
         .onChange(of: locationManager.isLocationAuthorized){ oldValue, newValue in
             if newValue {
-                vm.showMap = true
+                vm.boolState.showMap = true
             }
         }
     }
@@ -193,7 +189,7 @@ struct UserAnotation: View {
         ZStack {
             Circle()
                 .frame(width: 48, height: 48)
-                .foregroundStyle(.blue.opacity(0.3))
+                .foregroundStyle(Color.primaryPink.opacity(0.3))
             
             Circle()
                 .frame(width: 32, height: 32)
@@ -201,7 +197,7 @@ struct UserAnotation: View {
             
             Circle()
                 .frame(width: 16, height: 16)
-                .foregroundStyle(.blue)
+                .foregroundStyle(Color.primaryPink)
         }
     }
 }
@@ -253,7 +249,7 @@ struct SetStarRate: View {
                             selectedStar = star
                         }
                         .font(.largeTitle)
-                        .foregroundStyle(Color.primaryBlue)
+                        .foregroundStyle(Color.primaryPink)
                 }
             }
             .padding(.top, 4)
@@ -270,7 +266,7 @@ struct SetImages: View {
             
             Text("3 Images Uploaded")
                 .font(.caption)
-                .foregroundStyle(Color.secondaryBlue.opacity(10))
+                .foregroundStyle(Color.secondaryPink.opacity(10))
                 .padding(.vertical, 2)
             
             HStack (alignment: .center){
@@ -280,9 +276,9 @@ struct SetImages: View {
                     Image(systemName: "photo.stack")
                         .resizable()
                         .frame(width: 100, height: 100)
-                        .foregroundStyle(Color.primaryBlue)
+                        .foregroundStyle(Color.primaryPink)
                         .padding()
-                        .background(Color.secondaryBlue)
+                        .background(Color.secondaryPink)
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                 })
                 
