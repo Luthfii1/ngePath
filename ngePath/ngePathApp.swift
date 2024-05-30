@@ -10,11 +10,15 @@ import SwiftUI
 @main
 struct ngePathApp: App {
     @StateObject private var vm = LocationViewModel()
+    @StateObject private var locationManager = LocationManagerViewModel()
+//    @StateObject var coreData = CoreDataViewModel()
     
     var body: some Scene {
         WindowGroup {
             LandingPageView(isLoading: false)
                 .environmentObject(vm)
+                .environmentObject(locationManager)
+//                .environment(\.managedObjectContext, coreData.container.viewContext)
         }
     }
 }

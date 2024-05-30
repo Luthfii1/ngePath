@@ -10,7 +10,7 @@ import MapKit
 import SwiftUI
 
 class LocationViewModel: ObservableObject {
-    // Set mapLocation
+    // Map Variable
     @Published var selectedItem: SavePlaces {
         didSet {
             withAnimation(.easeInOut) {
@@ -19,26 +19,23 @@ class LocationViewModel: ObservableObject {
             }
         }
     }
-    // Set mapRegion
     @Published var mapRegion: MKCoordinateRegion = MKCoordinateRegion()
-    // set mapCamera
     @Published var mapCamera: MapCameraPosition
     
-    // State Var
-    @Published var state: VarState {
+    // State Variable
+    @Published var state: VarStateModel {
         didSet {
             filterPlaces()
         }
     }
-    // Bool State
-    @Published var boolState: BoolState
+    @Published var boolState: BoolStateModel
     
     // sampleResult
     @Published var sampleResult: [SavePlaces]
     // Categories
-    @Published var categories: [Categories]
+    @Published var categories: [CategoryModel]
     // Create newInput
-    @Published var inputUser: CreateNewPlace {
+    @Published var inputUser: CreateNewPlaceModel {
         didSet {
             filterPlaces()
         }
@@ -46,17 +43,19 @@ class LocationViewModel: ObservableObject {
     // Filtered Places
     @Published var filteredPlaces: [SavePlaces] = []
     @Published var imagesStory: [String] = []
+    
+    
     init() {
         self.selectedItem = sampleSavePlaces.first!
         self.mapRegion = .userRegion
         self.mapCamera = .region(.userRegion)
         
-        self.state = VarState()
-        self.boolState = BoolState()
+        self.state = VarStateModel()
+        self.boolState = BoolStateModel()
         
         self.sampleResult = sampleSavePlaces
         self.categories = sampleCategories
-        self.inputUser = CreateNewPlace()
+        self.inputUser = CreateNewPlaceModel()
         
         self.filterPlaces()
     }
@@ -104,6 +103,7 @@ class LocationViewModel: ObservableObject {
     
     func cleanSearch() {
         inputUser.textSearch = ""
+        inputUser.setPlaceName = ""
         state.searchResult = []
         filterPlaces()
     }
@@ -117,7 +117,6 @@ class LocationViewModel: ObservableObject {
         let locations = inputUser.textSearch.isEmpty ? sampleResult : sampleResult.filter { $0.name.lowercased().contains(inputUser.textSearch.lowercased()) }
         let category = state.setCategory
         
-        //        print("searchResult: ", locations)
         
         if category.isEmpty {
             filteredPlaces = locations
@@ -133,17 +132,7 @@ class LocationViewModel: ObservableObject {
         filteredPlaces = result
     }
     
-    //    func getAllImagesStory(isGallery: Bool) -> Gallery {
-    //        if isGallery {
-    //            guard let stories = selectedItem.stories else {
-    //                return Gallery(logo: "", name: "") // Return an empty Gallery if stories is nil
-    //            }
-    //            let images = stories.compactMap { $0.images }.flatMap { $0 }
-    //            // Assuming you want to return the first image as logo and "All Images" as name
-    //            let logo = images
-    //            return Gallery(logo: logo, name: "All Images")
-    //        } else {
-    //            return sampleGalleries // Return sampleGalleries if it's not a gallery
-    //        }
-    //    }
+    func inputState() -> String {
+        return state.inputCase.rawValue.lowercased()
+    }
 }

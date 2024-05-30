@@ -10,6 +10,8 @@ import MapKit
 
 struct DraggableSheetView: View {
     @EnvironmentObject private var vm: LocationViewModel
+//    @EnvironmentObject private var coreData: CoreDataViewModel
+    @StateObject var coreData = CoreDataViewModel()
     @State private var textSearch: String = ""
     
     @State private var offset: CGFloat = UIScreen.main.bounds.height * 0.85
@@ -57,6 +59,11 @@ struct DraggableSheetView: View {
                                         .padding(10)
                                 }
                                 .padding(.vertical, 20)
+                                
+                                
+                                ForEach(coreData.savedEntities, id: \.self) { place in
+                                    Text(place.placeName ?? "placeName")
+                                }
                             }
                         }
                     }
@@ -66,7 +73,7 @@ struct DraggableSheetView: View {
                 .padding(.bottom, 50)
                 .background(Color.white)
                 .cornerRadius(20)
-                .shadow(color: Color("SecondaryBlue").opacity(10), radius: 10)
+                .shadow(color: Color.secondaryPink.opacity(10), radius: 10)
                 .offset(y: self.offset)
                 .gesture(
                     DragGesture()
@@ -91,6 +98,9 @@ struct DraggableSheetView: View {
             .padding()
         }
         .edgesIgnoringSafeArea(.all)
+        .onAppear {
+                    coreData.fetchPlace()
+                }
     }
 }
 

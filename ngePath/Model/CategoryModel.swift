@@ -12,12 +12,12 @@ protocol Mappable {
     var name: String { get }
 }
 
-class Categories {
+class CategoryModel {
     var logo: String
     var name: CategoryType
     
     init(name: CategoryType) {
-        self.logo = Categories.logoForCategory(name)
+        self.logo = CategoryModel.logoForCategory(name)
         self.name = name
     }
     

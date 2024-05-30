@@ -11,6 +11,7 @@ struct LandingPageView: View {
     var isLoading: Bool
     @State private var navigateToMapView: Bool = false
     @EnvironmentObject private var vm: LocationViewModel
+    @FetchRequest(sortDescriptors: []) var coreData: FetchedResults<Place>
     
     var body: some View {
         NavigationStack {

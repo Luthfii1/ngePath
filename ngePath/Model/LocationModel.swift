@@ -35,13 +35,13 @@ enum CategoryType: String {
 class SavePlaces: Identifiable, ObservableObject {
     var name: String
     var coordinate: CLLocationCoordinate2D
-    var category: Categories
+    var category: CategoryModel
     @Published var isFavorite: Bool = false
     var address: String
     var rate: Double
     var stories: [Story]?
     
-    init(name: String, coordinate: CLLocationCoordinate2D, category: Categories, rate: Double, isFavorite: Bool = false, address: String, stories: [Story]? = nil) {
+    init(name: String, coordinate: CLLocationCoordinate2D, category: CategoryModel, rate: Double, isFavorite: Bool = false, address: String, stories: [Story]? = nil) {
             self.name = name
             self.coordinate = coordinate
             self.category = category

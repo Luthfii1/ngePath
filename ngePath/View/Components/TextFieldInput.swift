@@ -9,8 +9,16 @@ import SwiftUI
 
 struct TextFieldInput: View {
     @EnvironmentObject private var vm: LocationViewModel
+    @FetchRequest(sortDescriptors: []) var coreData: FetchedResults<Place>
     var placeholder: String
     var isSearching: Bool
+    var input: String {
+        if isSearching {
+            return vm.inputUser.textSearch
+        } else {
+            return vm.inputUser.setPlaceName
+        }
+    }
     
     var body: some View {
         HStack {
@@ -19,7 +27,7 @@ struct TextFieldInput: View {
                     .foregroundStyle(.gray)
             }
             
-            TextField(placeholder, text: $vm.inputUser.textSearch, axis: .vertical)
+            TextField(placeholder, text: isSearching ? $vm.inputUser.textSearch : $vm.inputUser.setPlaceName, axis: .vertical)
                 .font(.footnote)
                 .fontWeight(.semibold)
                 .foregroundStyle(.gray)
@@ -27,10 +35,13 @@ struct TextFieldInput: View {
                 .onChange(of: vm.inputUser.textSearch) { oldValue, newValue in
                     vm.filterPlaces()
                 }
+                .onChange(of: vm.inputUser.setPlaceName) { oldValue, newValue in
+                    vm.inputUser.setPlaceName = newValue
+                }
             
             Spacer()
             
-            if !vm.inputUser.textSearch.isEmpty {
+            if !input.isEmpty {
                 Image(systemName: "xmark.circle")
                     .imageScale(.large)
                     .font(.subheadline)
@@ -38,7 +49,6 @@ struct TextFieldInput: View {
                     .padding(.horizontal, 5)
                     .onTapGesture {
                         vm.cleanSearch()
-//                        print("remove: ", vm.inputUser.textSearch)
                     }
             }
         }

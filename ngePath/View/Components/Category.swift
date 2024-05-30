@@ -68,5 +68,5 @@ struct Category: View {
 
 #Preview {
     Category(logo: "bird.fill", name: "n", setCategory: .constant(["Burung"]))
-        .environmentObject(LocationManager())
+        .environmentObject(LocationManagerViewModel())
 }

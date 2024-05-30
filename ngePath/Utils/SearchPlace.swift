@@ -13,12 +13,7 @@ func searchPlace (text: String) async -> [MKMapItem] {
     request.naturalLanguageQuery = text
     request.region = .userRegion
     
-//    print("text : ", request.naturalLanguageQuery)
-//    print("region : ", request.region)
-    
     let results = try? await MKLocalSearch(request: request).start()
-    
-//    print("return : ", results?.mapItems ?? [])
     
     return results?.mapItems ?? []
 }
